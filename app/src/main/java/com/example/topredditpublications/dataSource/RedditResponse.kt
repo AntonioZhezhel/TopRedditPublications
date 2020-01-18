@@ -1,3 +1,3 @@
 package com.example.topredditpublications.dataSource
 
-class RedditApiResponse(val data: RedditListing)
+class RedditResponse(val data: RedditListing)
