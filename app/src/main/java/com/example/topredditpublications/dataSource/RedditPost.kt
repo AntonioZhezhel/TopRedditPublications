@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class RedditPost {
+data class RedditPost (
     @SerializedName("name")
     val key: String,
     @SerializedName("title")
@@ -20,5 +20,4 @@ data class RedditPost {
     @SerializedName("thumbnail")
     val thumbnail: String
 
-
-}
+)
