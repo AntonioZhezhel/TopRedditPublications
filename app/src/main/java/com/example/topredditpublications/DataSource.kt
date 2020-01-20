@@ -31,20 +31,54 @@ class DataSource: PageKeyedDataSource<String,RedditPost>() {
 
                     val listing = response.body()?.data
                     val redditPost= listing?.children?.map { it.data }
-
+                    callback.onResult(redditPost ?: listOf(),listing?.before,listing?.after)
                 }
             })
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<String, RedditPost>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        messagesFromApi.getPosts(loadSize = params.requestedLoadSize,after = params.key)
+            .enqueue(object : retrofit2.Callback<RedditResponse>{
+
+                override fun onFailure(call: Call<RedditResponse>?, t: Throwable?) {
+                    Log.e("DataSource", "Failed to fetch data!")
+                }
+
+                override fun onResponse(
+                    call: Call<RedditResponse>,
+                    response: Response<RedditResponse>
+                ) {
+                    val listing = response.body()?.data
+                    val items = listing?.children?.map { it.data }
+                    callback.onResult(items?: listOf(),listing?.after)
+
+                }
+            })
+
     }
 
     override fun loadBefore(
         params: LoadParams<String>,
         callback: LoadCallback<String, RedditPost>
     ) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        messagesFromApi.getPosts(loadSize = params.requestedLoadSize,before = params.key)
+            .enqueue(object : retrofit2.Callback<RedditResponse>{
+                override fun onFailure(call: Call<RedditResponse>, t: Throwable) {
+                    Log.e("DataSource", "Failed to fetch data!")
+                }
+
+                override fun onResponse(
+                    call: Call<RedditResponse>,
+                    response: Response<RedditResponse>
+                ) {
+                    val listing = response.body()?.data
+                    val items = listing?.children?.map { it.data }
+                    callback.onResult(items?: listOf(),listing?.before)                }
+
+            })
+
     }
 
 }
