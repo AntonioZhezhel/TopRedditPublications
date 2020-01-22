@@ -10,7 +10,9 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.adapter_row.view.*
 import java.util.*
 
-class PostAdapter() : PagedListAdapter<RedditPost,PostViewHolder>(DiffUtilCallback()) {
+class PostAdapter (private val mListener: (RedditPost) -> Unit) : PagedListAdapter<RedditPost,PostViewHolder>(DiffUtilCallback()) {
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.adapter_row,parent,false)
@@ -32,5 +34,14 @@ class PostAdapter() : PagedListAdapter<RedditPost,PostViewHolder>(DiffUtilCallba
         holder.itemView.tvTitle.text = item.title
         holder.itemView.tvPublicationTime.text = dateStr
         Picasso.get().load(item.thumbnail).into(holder.itemView.ibThumbnail)
+
+        holder.itemView.ibThumbnail.tag = position
+        holder.itemView.ibThumbnail.setOnClickListener {
+           item.let { it1 -> mListener.invoke(it1) }
+
+
+        }
     }
+
+
 }

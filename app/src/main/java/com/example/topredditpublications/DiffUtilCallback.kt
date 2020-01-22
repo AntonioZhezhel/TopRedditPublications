@@ -15,5 +15,6 @@ class DiffUtilCallback : DiffUtil.ItemCallback<RedditPost>() {
                 && oldItem.num_comments == newItem.num_comments
                 && oldItem.created_utc == newItem.created_utc
                 && oldItem.thumbnail == newItem.thumbnail
+                && oldItem.url == newItem.url
     }
 }

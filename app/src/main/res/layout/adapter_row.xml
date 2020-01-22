@@ -54,7 +54,8 @@
         android:id="@+id/ibThumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:background="#00000000"/>
 
 
 </RelativeLayout>
