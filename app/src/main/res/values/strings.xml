@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Top Reddit publications</string>
-    <string name="author">Posted by: U /%1$d</string>
+    <string name="author">Posted by: U/ %1$d</string>
     <string name="comments">Comments %1$d</string>
 </resources>

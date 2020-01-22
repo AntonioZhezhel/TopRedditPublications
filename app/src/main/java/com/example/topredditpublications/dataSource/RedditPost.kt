@@ -18,6 +18,8 @@ data class RedditPost (
     @SerializedName("num_comments")
     val num_comments: Int,
     @SerializedName("thumbnail")
-    val thumbnail: String
+    val thumbnail: String,
+    @SerializedName("url")
+    val url: String
 
 )

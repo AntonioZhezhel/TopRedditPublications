@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivPublicationTime"
         android:layout_alignParentLeft="true"
-        android:layout_toRightOf="@+id/ibThumbnail"
+        android:layout_toLeftOf="@+id/ibThumbnail"
         />
     <ImageView
         android:id="@+id/ivComment"

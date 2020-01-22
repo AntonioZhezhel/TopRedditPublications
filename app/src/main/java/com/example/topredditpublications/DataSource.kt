@@ -7,9 +7,7 @@ import com.example.topredditpublications.dataSource.RedditPost
 import com.example.topredditpublications.dataSource.RedditResponse
 import retrofit2.Call
 import retrofit2.Response
-import javax.security.auth.callback.Callback
-
-class DataSource: PageKeyedDataSource<String,RedditPost>() {
+class DataSource : PageKeyedDataSource<String,RedditPost>() {
 
     private val messagesFromApi =RedditApi.createService()
 
