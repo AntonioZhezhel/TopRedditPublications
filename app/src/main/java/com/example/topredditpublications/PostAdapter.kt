@@ -13,7 +13,6 @@ import java.util.*
 class PostAdapter (private val mListener: (RedditPost) -> Unit) : PagedListAdapter<RedditPost,PostViewHolder>(DiffUtilCallback()) {
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.adapter_row,parent,false)
         return PostViewHolder(view)

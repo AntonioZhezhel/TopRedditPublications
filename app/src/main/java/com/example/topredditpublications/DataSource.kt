@@ -5,11 +5,14 @@ import androidx.paging.PageKeyedDataSource
 import com.example.topredditpublications.dataSource.RedditApi
 import com.example.topredditpublications.dataSource.RedditPost
 import com.example.topredditpublications.dataSource.RedditResponse
+import io.reactivex.disposables.CompositeDisposable
 import retrofit2.Call
 import retrofit2.Response
-class DataSource : PageKeyedDataSource<String,RedditPost>() {
+class DataSource(
+    private val messagesFromApi: RedditApi,
+    private val compositeDisposable: CompositeDisposable
+) : PageKeyedDataSource<String,RedditPost>() {
 
-    private val messagesFromApi =RedditApi.createService()
 
     override fun loadInitial(
         params: LoadInitialParams<String>,

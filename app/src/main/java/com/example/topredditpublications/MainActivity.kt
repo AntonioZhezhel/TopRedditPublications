@@ -15,23 +15,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.topredditpublications.dataSource.RedditPost
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.view.*
-import java.util.logging.Handler
 import android.os.Bundle as Bundle1
 
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     private val RECORD_REQUEST_CODE = 101
+    private lateinit var viewModel: ListViewModel
 
-
-     private val adapter = PostAdapter {
+    private var adapter = PostAdapter {
          val mDialog = LayoutInflater.from(this).inflate(R.layout.custom_dialog,null)
          val dialog = AlertDialog.Builder(this).setView(mDialog)
          val alert = dialog.show()
@@ -39,34 +37,32 @@ class MainActivity : AppCompatActivity() {
          alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
          Picasso.get().load(it.url).into(mDialog.ivImageURL)
 
-         android.os.Handler().postDelayed(object :Runnable {
-              override fun run() {
-                 if (mDialog.ivImageURL.drawable == null) {
-                     alert.dismiss()
-                 } else {
-                     mDialog.bnSave.setOnClickListener {
-                         val permission = ContextCompat.checkSelfPermission(
-                             this@MainActivity,
-                             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                         )
+         android.os.Handler().postDelayed({
+             if (mDialog.ivImageURL.drawable == null) {
+                 alert.dismiss()
+             } else {
+                 mDialog.bnSave.setOnClickListener {
+                     val permission = ContextCompat.checkSelfPermission(
+                         this@MainActivity,
+                         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                     )
 
-                         if (permission != PackageManager.PERMISSION_GRANTED) {
-                             makeRequest()
-                         } else {
-                             val myDrawable = mDialog.ivImageURL.drawable
-                             val bitmap: Bitmap = (myDrawable as BitmapDrawable).bitmap
+                     if (permission != PackageManager.PERMISSION_GRANTED) {
+                         makeRequest()
+                     } else {
+                         val myDrawable = mDialog.ivImageURL.drawable
+                         val bitmap: Bitmap = (myDrawable as BitmapDrawable).bitmap
 
-                             val uri: Uri = saveImageToExternalStorage(bitmap, "saveImage")
-                             toast("Image saved successful.$uri")
-                             alert.dismiss()
-                         }
-                     }
-
-                     mDialog.bnCancel.setOnClickListener {
+                         val uri: Uri = saveImageToExternalStorage(bitmap, "saveImage")
+                         toast("Image saved successful.$uri")
                          alert.dismiss()
                      }
-
                  }
+
+                 mDialog.bnCancel.setOnClickListener {
+                     alert.dismiss()
+                 }
+
              }
          },500)
      }
@@ -86,10 +82,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        viewModel = ViewModelProviders.of(this).get(ListViewModel::class.java)
         setupPermissions()
         initList()
     }
-
     private fun setupPermissions() {
         val permission = ContextCompat.checkSelfPermission(this,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -118,35 +114,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initList() {
 
-        rvListPost.layoutManager = LinearLayoutManager(this)
+
+    private fun initList(){
+        rvListPost.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
         rvListPost.adapter = adapter
-
-
-
-        val config = PagedList.Config.Builder()
-            .setPageSize(30)
-            .setEnablePlaceholders(false)
-            .build()
-
-        val liveData = initPagedListBuilder(config).build()
-        liveData.observe(this, Observer <PagedList<RedditPost>>{pagedList ->
-            adapter.submitList(pagedList)
-        })
-
-}
-
-    private fun initPagedListBuilder(config: PagedList.Config?): LivePagedListBuilder<String, RedditPost> {
-
-        val dataSourceFactory = object : androidx.paging.DataSource.Factory<String, RedditPost>() {
-            override fun create(): androidx.paging.DataSource<String, RedditPost> {
-
-                return DataSource()
-            }
-        }
-
-        return LivePagedListBuilder<String,RedditPost>(dataSourceFactory,config!!)
+        viewModel.postList.observe(this, Observer { adapter.submitList(it) })
     }
 
 
