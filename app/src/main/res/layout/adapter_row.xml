@@ -12,20 +12,21 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         />
+
     <ImageView
         android:id="@+id/ivPublicationTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_width="19dp"
+        android:layout_height="19dp"
         android:layout_below="@+id/tvAuthor"
-        android:background="@drawable/ic_clock"
-        />
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/ic_clock" />
     <TextView
         android:id="@+id/tvPublicationTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivPublicationTime"
         android:layout_below="@+id/tvAuthor"
+        android:textSize="15dp"
         />
     <TextView
         android:id="@+id/tvTitle"
@@ -34,6 +35,8 @@
         android:layout_below="@+id/ivPublicationTime"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/ibThumbnail"
+        android:textStyle="bold"
+        android:textSize="18dp"
         />
     <ImageView
         android:id="@+id/ivComment"

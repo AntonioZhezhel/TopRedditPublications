@@ -22,46 +22,53 @@ import com.example.topredditpublications.dataSource.RedditPost
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.view.*
+import java.util.logging.Handler
 import android.os.Bundle as Bundle1
 
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     private val RECORD_REQUEST_CODE = 101
-//    var myDrawable: Drawable = ivImageURL.drawable
-//    val bitmap: Bitmap = (myDrawable as BitmapDrawable).bitmap
-//    val bit: Bitmap =myDrawable.toBitmap()
+
 
      private val adapter = PostAdapter {
          val mDialog = LayoutInflater.from(this).inflate(R.layout.custom_dialog,null)
          val dialog = AlertDialog.Builder(this).setView(mDialog)
          val alert = dialog.show()
 
-
-
          alert.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
          Picasso.get().load(it.url).into(mDialog.ivImageURL)
-         mDialog.bnSave.setOnClickListener {
-             val permission = ContextCompat.checkSelfPermission(this,
-                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
-             if (permission != PackageManager.PERMISSION_GRANTED) {
-                 makeRequest()
-             }else {
-                 val myDrawable = mDialog.ivImageURL.drawable
-                 val bitmap: Bitmap = (myDrawable as BitmapDrawable).bitmap
+         android.os.Handler().postDelayed(object :Runnable {
+              override fun run() {
+                 if (mDialog.ivImageURL.drawable == null) {
+                     alert.dismiss()
+                 } else {
+                     mDialog.bnSave.setOnClickListener {
+                         val permission = ContextCompat.checkSelfPermission(
+                             this@MainActivity,
+                             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                         )
 
-                 val uri: Uri = saveImageToExternalStorage(bitmap, "saveImage")
-                 toast("Image saved successful.$uri")
-                 alert.dismiss()
+                         if (permission != PackageManager.PERMISSION_GRANTED) {
+                             makeRequest()
+                         } else {
+                             val myDrawable = mDialog.ivImageURL.drawable
+                             val bitmap: Bitmap = (myDrawable as BitmapDrawable).bitmap
+
+                             val uri: Uri = saveImageToExternalStorage(bitmap, "saveImage")
+                             toast("Image saved successful.$uri")
+                             alert.dismiss()
+                         }
+                     }
+
+                     mDialog.bnCancel.setOnClickListener {
+                         alert.dismiss()
+                     }
+
+                 }
              }
-         }
-
-         mDialog.bnCancel.setOnClickListener {
-             alert.dismiss()
-         }
-
-
+         },500)
      }
 
     private fun saveImageToExternalStorage(bitmap: Bitmap, save: String): Uri {
